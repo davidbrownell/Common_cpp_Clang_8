@@ -9,3 +9,6 @@ Activate.sh
 
 .coverage
 coverage.xml
+
+Tools/Clang/v8.0.0/Ubuntu/*
+Tools/Clang/v8.0.0/Windows/*
