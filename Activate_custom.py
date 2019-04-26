@@ -19,6 +19,7 @@ import sys
 
 sys.path.insert(0, os.getenv("DEVELOPMENT_ENVIRONMENT_FUNDAMENTAL"))
 from RepositoryBootstrap.SetupAndActivate import CommonEnvironment, CurrentShell
+from RepositoryBootstrap.Impl.ActivationActivity import ActivationActivity
 
 del sys.path[0]
 
@@ -26,6 +27,11 @@ del sys.path[0]
 _script_fullpath                            = CommonEnvironment.ThisFullpath()
 _script_dir, _script_name                   = os.path.split(_script_fullpath)
 # ----------------------------------------------------------------------
+
+# Ensure that we are loading custom data from this dir and not some other repository.
+sys.modules.pop("_custom_data", None)
+
+from _custom_data import _CUSTOM_DATA
 
 # <Class '<name>' has no '<attr>' member> pylint: disable = E1101
 # <Unrearchable code> pylint: disable = W0101
@@ -52,7 +58,68 @@ def GetCustomActions(
     cases, this is Bash on Linux systems and Batch or PowerShell on Windows systems.
     """
 
-    return []
+    actions = []
+
+    if fast:
+        actions.append(
+            CurrentShell.Commands.Message(
+                "** FAST: Activating without verifying content. ({})".format(_script_fullpath),
+            ),
+        )
+    else:
+        for name, version, filename_or_url, path_parts in _CUSTOM_DATA:
+            this_dir = os.path.join(*([_script_dir] + path_parts))
+            assert os.path.isdir(this_dir), this_dir
+
+            actions += [
+                CurrentShell.Commands.Execute(
+                    'python "{script}" Verify "{name}" "{dir}" "{version}"'.format(
+                        script=os.path.join(
+                            os.getenv("DEVELOPMENT_ENVIRONMENT_FUNDAMENTAL"),
+                            "RepositoryBootstrap",
+                            "SetupAndActivate",
+                            "AcquireBinaries.py",
+                        ),
+                        name=name,
+                        dir=this_dir,
+                        version=version,
+                    ),
+                ),
+                CurrentShell.Commands.Message(""),
+            ]
+
+        # Set the compiler
+        actions += [CurrentShell.Commands.Set("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME", "Clang-8")]
+
+        if CurrentShell.CategoryName == "Windows":
+            actions += [CurrentShell.Commands.Set("CXX", "clang-cl"), CurrentShell.Commands.Set("CC", "clang-cl")]
+        else:
+            actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang++")]
+
+        # Add the lib dir
+        clang_dir, clang_version = ActivationActivity.GetVersionedDirectoryEx(
+            version_specs.Tools,
+            _script_dir,
+            "Tools",
+            "Clang",
+        )
+
+        if clang_version.startswith("v"):
+            clang_version = clang_version[1:]
+
+        clang_lib_dir = os.path.join(
+            clang_dir,
+            "lib",
+            "clang",
+            clang_version,
+            "lib",
+            CurrentShell.CategoryName.lower(),
+        )
+        assert os.path.isdir(clang_lib_dir), clang_lib_dir
+
+        actions += [CurrentShell.Commands.Augment("LIB", clang_lib_dir)]
+
+    return actions
 
 
 # ----------------------------------------------------------------------
