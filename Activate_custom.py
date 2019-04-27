@@ -94,7 +94,7 @@ def GetCustomActions(
         if CurrentShell.CategoryName == "Windows":
             actions += [CurrentShell.Commands.Set("CXX", "clang-cl"), CurrentShell.Commands.Set("CC", "clang-cl")]
         else:
-            actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang++")]
+            actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang")]
 
         # Add the lib dir
         clang_dir, clang_version = ActivationActivity.GetVersionedDirectoryEx(
