@@ -107,9 +107,14 @@ def GetCustomActions(
         if clang_version.startswith("v"):
             clang_version = clang_version[1:]
 
+        clang_lib_dir = os.path.join(clang_dir, "lib")
+        assert os.path.isdir(clang_lib_dir), clang_lib_dir
+
+        actions += [CurrentShell.Commands.Set("CLANG_LIBRARY_PATH", clang_lib_dir)]
+
+        # Add the binary lib dir
         clang_lib_dir = os.path.join(
-            clang_dir,
-            "lib",
+            clang_lib_dir,
             "clang",
             clang_version,
             "lib",
