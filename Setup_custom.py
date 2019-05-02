@@ -115,6 +115,11 @@ def GetDependencies():
             ),
         )
 
+    d["Noop"] = Configuration(
+        "Configuration that doesn't do anything; in Bootstrap repositories (where different versions of repositories conflict with each other (normally, the use of these repositories are mutually exclusive))",
+        [Dependency("0EAA1DCF22804F90AD9F5A3B85A5D706", "Common_Environment", "python36", "https://github.com/davidbrownell/Common_Environment_v3.git")],
+    )
+
     return d
 
 
