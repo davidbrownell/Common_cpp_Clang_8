@@ -109,6 +109,10 @@ def GetDependencies():
         d[architecture] = Configuration(
             architecture,
             [Dependency("2CCC7E3E3C004A05AA384AF378246EAA", "Common_cpp_Clang_Common", architecture, "https://github.com/davidbrownell/Common_cpp_Clang_Common.git")],
+            VersionSpecs(
+                [],
+                {"Python": [VersionInfo("clang", "v8.0.0")]},
+            ),
         )
 
     return d
