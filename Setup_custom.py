@@ -98,10 +98,21 @@ def GetDependencies():
 
     d = OrderedDict()
 
-    for architecture in ["x64", "x86"]:
+    if CurrentShell.CategoryName == "Windows":
+        architectures = ["x64", "x86"]
+    else:
+        # Cross compiling on Linux is much more difficult on Linux than it is on
+        # Windows. Only support the current architecture.
+        architectures = [CurrentShell.Architecture]
+
+    for architecture in architectures:
         d[architecture] = Configuration(
             architecture,
             [Dependency("2CCC7E3E3C004A05AA384AF378246EAA", "Common_cpp_Clang_Common", architecture, "https://github.com/davidbrownell/Common_cpp_Clang_Common.git")],
+            VersionSpecs(
+                [],
+                {"Python": [VersionInfo("clang", "v8.0.0")]},
+            ),
         )
 
     return d
