@@ -87,7 +87,7 @@ def GetCustomActions(
                 ),
             ]
 
-        if configuration != "Noop":
+        if configuration not in ["Noop", "ToolsOnly"]:
             # Set the compiler
             actions += [CurrentShell.Commands.Set("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME", "Clang-8")]
 
