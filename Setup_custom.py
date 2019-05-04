@@ -115,6 +115,11 @@ def GetDependencies():
             ),
         )
 
+    d["python"] = Configuration(
+        "Support for Clang Python bindings",
+        [Dependency("0EAA1DCF22804F90AD9F5A3B85A5D706", "Common_Environment", "python36", "https://github.com/davidbrownell/Common_Environment_v3.git")],
+    )
+
     return d
 
 

@@ -87,43 +87,44 @@ def GetCustomActions(
                 ),
             ]
 
-        # Set the compiler
-        actions += [CurrentShell.Commands.Set("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME", "Clang-8")]
+        if configuration != "python":
+            # Set the compiler
+            actions += [CurrentShell.Commands.Set("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME", "Clang-8")]
 
-        if CurrentShell.CategoryName == "Windows":
-            actions += [CurrentShell.Commands.Set("CXX", "clang-cl"), CurrentShell.Commands.Set("CC", "clang-cl")]
-        else:
-            actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang")]
+            if CurrentShell.CategoryName == "Windows":
+                actions += [CurrentShell.Commands.Set("CXX", "clang-cl"), CurrentShell.Commands.Set("CC", "clang-cl")]
+            else:
+                actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang")]
 
-        # Add the lib dir
-        clang_dir, clang_version = ActivationActivity.GetVersionedDirectoryEx(
-            version_specs.Tools,
-            _script_dir,
-            "Tools",
-            "Clang",
-        )
+            # Add the lib dir
+            clang_dir, clang_version = ActivationActivity.GetVersionedDirectoryEx(
+                version_specs.Tools,
+                _script_dir,
+                "Tools",
+                "Clang",
+            )
 
-        if clang_version.startswith("v"):
-            clang_version = clang_version[1:]
+            if clang_version.startswith("v"):
+                clang_version = clang_version[1:]
 
-        # Add the binary lib dir
-        clang_lib_dir = os.path.join(
-            clang_dir,
-            "lib",
-            "clang",
-            clang_version,
-            "lib",
-            CurrentShell.CategoryName.lower(),
-        )
-        assert os.path.isdir(clang_lib_dir), clang_lib_dir
+            # Add the binary lib dir
+            clang_lib_dir = os.path.join(
+                clang_dir,
+                "lib",
+                "clang",
+                clang_version,
+                "lib",
+                CurrentShell.CategoryName.lower(),
+            )
+            assert os.path.isdir(clang_lib_dir), clang_lib_dir
 
-        actions += [CurrentShell.Commands.Augment("LIB", clang_lib_dir)]
+            actions += [CurrentShell.Commands.Augment("LIB", clang_lib_dir)]
 
-        # Add the clang library path
-        if CurrentShell.CategoryName == "Windows":
-            actions += [CurrentShell.Commands.Set("CLANG_LIBRARY_PATH", os.path.join(clang_dir, "bin"))]
-        else:
-            actions += [CurrentShell.Commands.Set("CLANG_LIBRARY_PATH", os.path.join(clang_dir, "lib"))]
+            # Add the clang library path
+            if CurrentShell.CategoryName == "Windows":
+                actions += [CurrentShell.Commands.Set("CLANG_LIBRARY_PATH", os.path.join(clang_dir, "bin"))]
+            else:
+                actions += [CurrentShell.Commands.Set("CLANG_LIBRARY_PATH", os.path.join(clang_dir, "lib"))]
 
     return actions
 
