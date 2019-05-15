@@ -105,15 +105,26 @@ def GetDependencies():
         # Windows. Only support the current architecture.
         architectures = [CurrentShell.Architecture]
 
-    for architecture in architectures:
-        d[architecture] = Configuration(
-            architecture,
-            [Dependency("2CCC7E3E3C004A05AA384AF378246EAA", "Common_cpp_Clang_Common", architecture, "https://github.com/davidbrownell/Common_cpp_Clang_Common.git")],
-            VersionSpecs(
-                [],
-                {"Python": [VersionInfo("clang", "v8.0.0")]},
-            ),
-        )
+    for key_suffix, desc_suffix in [
+        (None, None),
+        ("ex", "Augmented with an external linker"),
+    ]:
+        for architecture in architectures:
+            if key_suffix is None:
+                key = architecture
+                desc = architecture
+            else:
+                key = "{}-{}".format(architecture, key_suffix)
+                desc = "{} <{}>".format(architecture, desc_suffix)
+                
+            d[key] = Configuration(
+                desc,
+                [Dependency("2CCC7E3E3C004A05AA384AF378246EAA", "Common_cpp_Clang_Common", key, "https://github.com/davidbrownell/Common_cpp_Clang_Common.git")],
+                VersionSpecs(
+                    [],
+                    {"Python": [VersionInfo("clang", "v8.0.0")]},
+                ),
+            )
 
     d["python"] = Configuration(
         "Support for Clang Python bindings",
