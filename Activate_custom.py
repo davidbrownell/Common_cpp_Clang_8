@@ -87,25 +87,33 @@ def GetCustomActions(
                 ),
             ]
 
+        clang_dir, clang_version = ActivationActivity.GetVersionedDirectoryEx(
+            version_specs.Tools,
+            _script_dir,
+            "Tools",
+            "Clang",
+        )
+
+        if clang_version.startswith("v"):
+            clang_version = clang_version[1:]
+
+        if CurrentShell.CategoryName == "Linux":
+            actions += [
+                CurrentShell.Commands.Augment(
+                    "LD_LIBRARY_PATH",
+                    os.path.join(clang_dir, "lib"),
+                    update_memory=True,
+                ),
+            ]
+
         if configuration != "python":
             # Set the compiler
             actions += [CurrentShell.Commands.Set("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME", "Clang-8")]
 
-            if CurrentShell.CategoryName == "Windows":
+            if CurrentShell.CategoryName == "Windows" and configuration.endswith("-ex"):
                 actions += [CurrentShell.Commands.Set("CXX", "clang-cl"), CurrentShell.Commands.Set("CC", "clang-cl")]
             else:
                 actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang")]
-
-            # Add the lib dir
-            clang_dir, clang_version = ActivationActivity.GetVersionedDirectoryEx(
-                version_specs.Tools,
-                _script_dir,
-                "Tools",
-                "Clang",
-            )
-
-            if clang_version.startswith("v"):
-                clang_version = clang_version[1:]
 
             # Add the binary lib dir
             clang_lib_dir = os.path.join(
