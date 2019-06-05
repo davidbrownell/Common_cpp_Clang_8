@@ -33,7 +33,7 @@ if CurrentShell.CategoryName == "Windows":
     _CUSTOM_DATA.append(
         (
             "Clang - 8.0.0",
-            "5d340fea17c50f6243f96f72ac3df64d38c437fad31a40ca21507c4fae4a2c0b",
+            "577fef55f9395991deb273ff17bfc88a5794c504b8390333cd7b6ac29fe6e19d",
             "Install.7z",
             [
                 "Tools",
