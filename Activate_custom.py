@@ -115,10 +115,29 @@ def GetCustomActions(
             else:
                 actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang")]
 
-            # Add the binary lib dir
+            # Add the lib dirs
+            lib_dirs = []
+
+            # Standard
             clang_lib_dir = os.path.join(
                 clang_dir,
                 "lib",
+            )
+            assert os.path.isdir(clang_lib_dir), clang_lib_dir
+
+            lib_dirs.append(clang_lib_dir)
+
+            # Configuration-specific
+            potential_configuration_lib_dir = os.path.join(
+                clang_lib_dir,
+                configuration,
+            )
+            if os.path.isdir(potential_configuration_lib_dir):
+                lib_dirs.append(potential_configuration_lib_dir)
+
+            # clang lib dir
+            clang_lib_dir = os.path.join(
+                clang_lib_dir,
                 "clang",
                 clang_version,
                 "lib",
@@ -126,7 +145,9 @@ def GetCustomActions(
             )
             assert os.path.isdir(clang_lib_dir), clang_lib_dir
 
-            actions += [CurrentShell.Commands.Augment("LIB", clang_lib_dir)]
+            lib_dirs.append(clang_lib_dir)
+
+            actions += [CurrentShell.Commands.Augment("LIB", lib_dirs)]
 
             # Add the clang library path
             if CurrentShell.CategoryName == "Windows":
