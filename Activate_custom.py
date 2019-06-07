@@ -106,6 +106,8 @@ def GetCustomActions(
                 ),
             ]
 
+        # TODO: We don't need all of this functionality when the configuration is python
+        
         if configuration != "python":
             # Set the compiler
             actions += [CurrentShell.Commands.Set("DEVELOPMENT_ENVIRONMENT_CPP_COMPILER_NAME", "Clang-8")]
@@ -115,6 +117,22 @@ def GetCustomActions(
             else:
                 actions += [CurrentShell.Commands.Set("CXX", "clang++"), CurrentShell.Commands.Set("CC", "clang")]
 
+            # Add the include dirs
+            if not configuration.endswith("-ex"):
+                include_dirs = []
+
+                include_dirs.append(
+                    os.path.join(
+                        clang_dir,
+                        "include",
+                        "c++",
+                        "v1",
+                    ),
+                )
+                assert os.path.isdir(include_dirs[-1]), include_dirs[-1]
+
+                actions += [CurrentShell.Commands.Augment("INCLUDE", include_dirs)]
+            
             # Add the lib dirs
             lib_dirs = []
 
