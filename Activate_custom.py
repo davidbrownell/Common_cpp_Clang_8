@@ -99,11 +99,7 @@ def GetCustomActions(
 
         if CurrentShell.CategoryName == "Linux":
             actions += [
-                CurrentShell.Commands.Augment(
-                    "LD_LIBRARY_PATH",
-                    os.path.join(clang_dir, "lib"),
-                    update_memory=True,
-                ),
+                CurrentShell.Commands.Augment("LD_LIBRARY_PATH", os.path.join(clang_dir, "lib")),
             ]
 
         if configuration != "python":
