@@ -49,12 +49,16 @@ elif CurrentShell.Name == "Ubuntu":
     version                                 = distro.version()
 
     hash_map                                = {
+        "20.04": None,
         "18.04": "0f5c314f375ebd5c35b8c1d5e5b161d9efaeff0523bac287f8b4e5b751272f51",
         "16.04": "87b88d620284d1f0573923e6f7cc89edccf11d19ebaec1cfb83b4f09ac5db09c",
     }
 
     if version not in hash_map:
         raise Exception("'{}' is not a recognized Ubuntu version".format(version))
+
+    if hash_map[version] is None:
+        raise Exception("Clang 8 is not supported on Ubuntu {}".format(version))
 
     _CUSTOM_DATA.append(
         (
