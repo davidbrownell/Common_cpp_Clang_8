@@ -114,9 +114,9 @@ def GetDependencies():
                 key = architecture
                 desc = architecture
             else:
-                key = "{}-{}".format(architecture, key_suffix)
+                key = "{}_{}".format(architecture, key_suffix)
                 desc = "{} <{}>".format(architecture, desc_suffix)
-                
+
             d[key] = Configuration(
                 desc,
                 [Dependency("2CCC7E3E3C004A05AA384AF378246EAA", "Common_cpp_Clang_Common", key, "https://github.com/davidbrownell/Common_cpp_Clang_Common.git")],
@@ -139,7 +139,7 @@ def GetCustomActions(debug, verbose, explicit_configurations):
     """
     Returns an action or list of actions that should be invoked as part of the setup process.
 
-    Actions are generic command line statements defined in 
+    Actions are generic command line statements defined in
     <Common_Environment>/Libraries/Python/CommonEnvironment/v1.0/CommonEnvironment/Shell/Commands/__init__.py
     that are converted into statements appropriate for the current scripting language (in most
     cases, this is Bash on Linux systems and Batch or PowerShell on Windows systems.
@@ -162,7 +162,7 @@ def GetCustomActions(debug, verbose, explicit_configurations):
         if filename_or_url == "Install.7z":
             assert os.path.isdir(this_dir), this_dir
             install_filename = os.path.join(this_dir, filename_or_url)
-            
+
             # Reconstruct the binary
             if not os.path.isfile(install_filename):
                 actions += [
