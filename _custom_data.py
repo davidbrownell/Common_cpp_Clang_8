@@ -48,6 +48,10 @@ elif CurrentShell.Name == "Ubuntu":
 
     version                                 = distro.version()
 
+    # Hack to see if the 18.04 binaries will work on 20.04
+    if version == "20.04":
+        version = "18.04"
+
     hash_map                                = {
         "20.04": None,
         "18.04": "0f5c314f375ebd5c35b8c1d5e5b161d9efaeff0523bac287f8b4e5b751272f51",
